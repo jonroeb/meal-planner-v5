@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cozy Meal Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --transition-slow: 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    /* PINK (Default) */
+    body[data-theme="pink"] {
+      --bg-gradient: radial-gradient(circle at top left, #ffd1e8, #fbe7f4 40%, #f7d9ff 80%);
+      --glass: rgba(255, 255, 255, 0.7);
+      --card-border: rgba(255,255,255,0.8);
+      --text: #3b2b3b;
+      --accent: #ff6fa8;
+      --accent-soft: #ffc1da;
+      --danger: #ff4b6e;
+      --item-bg: rgba(255,255,255,0.9);
+      --item-hover-bg: #ffffff;
+      --item-border: rgba(255,255,255,0.9);
+      --input-bg: rgba(255,255,255,0.9);
+      --input-border: rgba(255,255,255,0.9);
+      --input-focus-shadow: 0 14px 32px rgba(255,111,168,0.25);
+      --btn-primary: linear-gradient(135deg, #ff8fb8, #ff6fa8);
+      --btn-shadow: 0 18px 40px rgba(255, 111, 168, 0.55);
+      --btn-text: #ffffff;
+      --shadow-soft: 0 18px 40px rgba(0,0,0,0.12);
+      --shadow-hover: 0 14px 30px rgba(0,0,0,0.12);
+      --tab-active-bg: #ffffff;
+      --tab-bg: rgba(255,255,255,0.6);
+    }
+
+    /* WHITE */
+    body[data-theme="white"] {
+      --bg-gradient: radial-gradient(circle at top left, #ffffff, #f4f4f4 40%, #eaeaea 80%);
+      --glass: rgba(255, 255, 255, 0.9);
+      --card-border: rgba(0,0,0,0.05);
+      --text: #222222;
+      --accent: #555555;
+      --accent-soft: #cccccc;
+      --danger: #d32f2f;
+      --item-bg: rgba(255,255,255,0.95);
+      --item-hover-bg: #ffffff;
+      --item-border: rgba(0,0,0,0.05);
+      --input-bg: rgba(255,255,255,1);
+      --input-border: rgba(0,0,0,0.1);
+      --input-focus-shadow: 0 14px 32px rgba(0,0,0,0.1);
+      --btn-primary: linear-gradient(135deg, #6d6d6d, #424242);
+      --btn-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+      --btn-text: #ffffff;
+      --shadow-soft: 0 18px 40px rgba(0,0,0,0.08);
+      --shadow-hover: 0 14px 30px rgba(0,0,0,0.12);
+      --tab-active-bg: #ffffff;
+      --tab-bg: rgba(0,0,0,0.05);
+    }
+
+    /* BLACK */
+    body[data-theme="black"] {
+      --bg-gradient: radial-gradient(circle at top left, #2c2c2c, #1a1a1a 40%, #000000 80%);
+      --glass: rgba(40, 40, 40, 0.7);
+      --card-border: rgba(255,255,255,0.1);
+      --text: #f0f0f0;
+      --accent: #ff6fa8;
+      --accent-soft: #ffc1da;
+      --danger: #ff4b6e;
+      --item-bg: rgba(50, 50, 50, 0.9);
+      --item-hover-bg: rgba(60, 60, 60, 0.95);
+      --item-border: rgba(255,255,255,0.1);
+      --input-bg: rgba(30, 30, 30, 0.9);
+      --input-border: rgba(255,255,255,0.1);
+      --input-focus-shadow: 0 14px 32px rgba(0,0,0,0.5);
+      --btn-primary: linear-gradient(135deg, #ff8fb8, #ff6fa8);
+      --btn-shadow: 0 18px 40px rgba(255, 111, 168, 0.3);
+      --btn-text: #ffffff;
+      --shadow-soft: 0 18px 40px rgba(0,0,0,0.5);
+      --shadow-hover: 0 14px 30px rgba(0,0,0,0.6);
+      --tab-active-bg: rgba(255,255,255,0.15);
+      --tab-bg: rgba(255,255,255,0.05);
+    }
+
+    /* TEAL */
+    body[data-theme="teal"] {
+      --bg-gradient: radial-gradient(circle at top left, #b2dfdb, #e0f7f4 40%, #80cbc4 80%);
+      --glass: rgba(255, 255, 255, 0.7);
+      --card-border: rgba(255,255,255,0.8);
+      --text: #004d40;
+      --accent: #009688;
+      --accent-soft: #80cbc4;
+      --danger: #d32f2f;
+      --item-bg: rgba(255,255,255,0.9);
+      --item-hover-bg: #ffffff;
+      --item-border: rgba(255,255,255,0.9);
+      --input-bg: rgba(255,255,255,0.9);
+      --input-border: rgba(255,255,255,0.9);
+      --input-focus-shadow: 0 14px 32px rgba(0,150,136,0.25);
+      --btn-primary: linear-gradient(135deg, #4db6ac, #009688);
+      --btn-shadow: 0 18px 40px rgba(0, 150, 136, 0.55);
+      --btn-text: #ffffff;
+      --shadow-soft: 0 18px 40px rgba(0,0,0,0.12);
+      --shadow-hover: 0 14px 30px rgba(0,0,0,0.12);
+      --tab-active-bg: #ffffff;
+      --tab-bg: rgba(255,255,255,0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      color: var(--text);
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      padding: 16px 18px;
+      border: 1px solid var(--card-border);
+      transition: transform var(--transition-slow), box-shadow var(--transition-slow), background var(--transition-slow);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .icon-btn {
+      border: none;
+      background: var(--item-bg);
+      border-radius: 999px;
+      padding: 6px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text);
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .icon-btn:hover {
+      background: var(--item-hover-bg);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .icon-btn.danger {
+      background: rgba(255, 75, 110, 0.15);
+      color: var(--danger);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--item-bg);
+      border: 1px solid var(--item-border);
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-soft);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pill span {
+      opacity: 0.7;
+      cursor: pointer;
+    }
+
+    .meal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .meal-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: var(--item-bg);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: var(--shadow-soft);
+      gap: 10px;
+    }
+
+    .meal-item:hover {
+      background: var(--item-hover-bg);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .meal-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .meal-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .meal-meta {
+      font-size: 0.78rem;
+      opacity: 0.7;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .meal-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 6px;
+    }
+
+    .delete-btn {
+      border: none;
+      background: transparent;
+      color: rgba(0,0,0,0.35);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 999px;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    body[data-theme="black"] .delete-btn { color: rgba(255,255,255,0.5); }
+    body[data-theme="teal"] .delete-btn { color: rgba(0,77,64,0.4); }
+
+    .delete-btn:hover {
+      background: rgba(255,75,110,0.15);
+      color: var(--danger);
+      transform: translateY(-1px);
+    }
+
+    .add-btn-main {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      left: 18px;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    body.dialog-open .add-btn-main {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px);
+    }
+
+    .add-btn-main button {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 260px;
+      padding: 14px 18px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: var(--btn-primary);
+      color: var(--btn-text);
+      font-weight: 600;
+      font-size: 0.98rem;
+      box-shadow: var(--btn-shadow);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform var(--transition-slow), box-shadow var(--transition-slow), filter var(--transition-slow);
+    }
+
+    .add-btn-main button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+      filter: brightness(1.03);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background: var(--tab-bg);
+      color: var(--text);
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tab.active {
+      background: var(--tab-active-bg);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-1px);
+      font-weight: 600;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .field input,
+    .field textarea,
+    .field select,
+    .search-input {
+      border-radius: 14px;
+      border: 1px solid var(--input-border);
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      background: var(--input-bg);
+      color: var(--text);
+      box-shadow: var(--shadow-soft);
+      outline: none;
+      transition: box-shadow var(--transition-slow), transform var(--transition-slow), border-color var(--transition-slow), background var(--transition-slow);
+      width: 100%;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus,
+    .search-input:focus {
+      border-color: var(--accent-soft);
+      box-shadow: var(--input-focus-shadow);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    .wizard-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      gap: 8px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .btn.secondary {
+      background: var(--item-bg);
+      color: var(--text);
+    }
+
+    .btn.primary {
+      background: var(--btn-primary);
+      color: var(--btn-text);
+      box-shadow: var(--btn-shadow);
+    }
+
+    .btn.primary:hover, .btn.secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .btn.danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--item-bg);
+      box-shadow: var(--shadow-soft);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .checkbox-row:hover { transform: translateY(-1px); }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .checkbox-row span {
+      font-size: 0.9rem;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-slow);
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-content {
+      width: 100%;
+      max-width: 520px;
+      margin: auto;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: transform var(--transition-slow), opacity var(--transition-slow);
+    }
+
+    .overlay.visible .overlay-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--tab-active-bg);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 0.85rem;
+      box-shadow: var(--shadow-hover);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-slow), transform var(--transition-slow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 20;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .grocery-list {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .grocery-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: var(--item-bg);
+      font-size: 0.9rem;
+    }
+
+    .grocery-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+    }
+
+    .category-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .chip {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      background: var(--tab-bg);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .chip.active {
+      background: var(--tab-active-bg);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-1px);
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (min-width: 768px) {
+      .app {
+        padding-top: 32px;
+      }
+      .card {
+        padding: 18px 20px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .app {
+        padding: 12px;
+      }
+      .card {
+        padding: 14px 16px;
+        border-radius: 20px;
+      }
+      .title {
+        font-size: 1.1rem;
+      }
+      .add-btn-main button {
+        max-width: 100%;
+      }
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      .app, .app * { visibility: visible; }
+      
+      body.dialog-open .app, 
+      body.dialog-open .app * { visibility: hidden; }
+      body.dialog-open .overlay.visible, 
+      body.dialog-open .overlay.visible * { visibility: visible; }
+      
+      .overlay { 
+        position: absolute; 
+        inset: 0; 
+        background: #fff !important; 
+        opacity: 1 !important; 
+        pointer-events: auto !important; 
+        z-index: 9999;
+        display: none !important;
+      }
+      body.dialog-open .overlay.visible { display: flex !important; }
+      
+      .overlay-content { 
+        max-width: 100%; 
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .card { 
+        box-shadow: none !important; 
+        border: none !important; 
+        background: #fff !important;
+        color: #000 !important;
+        backdrop-filter: none !important;
+      }
+      .btn, .icon-btn, .wizard-footer, .add-btn-main { display: none !important; }
+      .grocery-item, .pill { 
+        background: #fff !important; 
+        border: 1px solid #ccc !important; 
+        color: #000 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="pink">
+  <div class="app">
+    <div class="card">
+      <div class="card-header">
+        <div class="title">Meals for Mom 💗</div>
+        <div style="display:flex; gap:8px;">
+          <button class="icon-btn" id="settingsBtn">⚙️</button>
+          <button class="icon-btn" id="trashBtn">🗑️</button>
+        </div>
+      </div>
+
+      <div class="tabs" id="mainTabs">
+        <div class="tab active" data-main="meals">Meals</div>
+        <div class="tab" data-main="plan">2‑Week Plan</div>
+      </div>
+
+      <div id="mealsTab">
+        <div class="category-chips" id="categoryChips"></div>
+        <div class="search-row" style="margin-bottom: 12px;">
+          <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search meals..." />
+        </div>
+        <div class="meal-list" id="mealList"></div>
+        <div style="font-size:0.8rem; opacity:0.6; margin-top:6px;" id="emptyHint">
+          No meals yet. Tap “Add Meal” to start her cozy menu.
+        </div>
+      </div>
+
+      <div id="planTab" style="display:none;">
+        <button class="icon-btn danger" id="resetPlanBtn">Reset Meal Plan</button>
+        <div class="meal-list" id="planList" style="margin-top:10px;"></div>
+        <button class="btn primary" id="generatePlanGroceriesBtn" style="margin-top:12px;">
+          Generate Grocery List
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="add-btn-main">
+    <button id="openWizardBtn">＋ Add Meal</button>
+  </div>
+
+  <!-- Add/Edit Wizard -->
+  <div class="overlay" id="wizardOverlay">
+    <div class="overlay-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="title" id="wizardTitle">New Meal</div>
+          <button class="icon-btn" id="closeWizardBtn">✕ Close</button>
+        </div>
+        <div class="tabs">
+          <div class="tab active" data-step="0">Details</div>
+          <div class="tab" data-step="1">Ingredients</div>
+          <div class="tab" data-step="2">Finalize</div>
+        </div>
+        
+        <div id="wizardStep0">
+          <div class="field">
+            <label>Meal name</label>
+            <input type="text" id="mealNameInput" placeholder="e.g. Sunday Roast, Chicken Alfredo" />
+          </div>
+          <div class="field">
+            <label>Description</label>
+            <textarea id="mealDescInput" placeholder="What is this meal? Any notes for Mom?"></textarea>
+          </div>
+          <div class="field">
+            <label>Cooking Instructions</label>
+            <textarea id="mealInstructionsInput" placeholder="Step by step cooking instructions..."></textarea>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <div class="field" style="flex: 1; min-width: 120px;">
+              <label>Prep Time</label>
+              <input type="text" id="mealPrepTimeInput" placeholder="e.g. 20 minutes" />
+            </div>
+            <div class="field" style="flex: 1; min-width: 120px;">
+              <label>Servings</label>
+              <input type="text" id="mealServingsInput" placeholder="e.g. Serves 4" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <select id="mealCategoryInput">
+              <option value="Beef">Beef</option>
+              <option value="Chicken">Chicken</option>
+              <option value="Pork">Pork</option>
+              <option value="Pasta">Pasta</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Misc">Misc</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Recipe Photo</label>
+            <input type="file" id="mealPhotoInput" accept="image/*" />
+            <img id="mealPhotoPreview" style="max-width: 100%; border-radius: 14px; margin-top: 8px; display: none;" />
+            <button class="btn secondary danger" id="removePhotoBtn" style="margin-top: 8px; display: none;">Remove Photo</button>
+          </div>
+        </div>
+
+        <div id="wizardStep1" style="display:none;">
+          <div class="field">
+            <label>Ingredients</label>
+            <input type="text" id="ingredientInput" placeholder="Type ingredient and press Enter or comma" />
+          </div>
+          <div class="pill-row" id="ingredientPills"></div>
+          <div style="font-size:0.78rem; opacity:0.7;">
+            You can skip this step if you want. Each ingredient becomes a grocery item.
+          </div>
+        </div>
+
+        <div id="wizardStep2" style="display:none;">
+          <div class="checkbox-row">
+            <input type="checkbox" id="oftenUsedInput" />
+            <span>⭐ Favorite (keep this near the top)</span>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="hardToMakeInput" />
+            <span>🔥 Hard to make (just a visual reminder)</span>
+          </div>
+        </div>
+
+        <div class="wizard-footer">
+          <button class="btn secondary" id="wizardBackBtn">← Back</button>
+          <button class="btn primary" id="wizardNextBtn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipe / Grocery Detail -->
+  <div class="overlay" id="groceryOverlay">
+    <div class="overlay-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="title" id="groceryTitle"></div>
+          <button class="icon-btn" id="closeGroceryBtn">✕ Close</button>
+        </div>
+        <div style="font-size:0.85rem; opacity:0.8; margin-bottom:6px;" id="groceryMeta"></div>
+        <img id="groceryPhoto" style="width:100%; max-width: 300px; border-radius: 14px; margin: 10px 0; display: none;" />
+        <div style="font-size:0.9rem; margin-bottom:8px; white-space: pre-wrap;" id="groceryDesc"></div>
+        <div id="groceryInstructions" style="display: none; margin-bottom: 12px;">
+          <div style="font-weight:600; margin-bottom:4px;">Cooking Instructions</div>
+          <div style="font-size:0.9rem; white-space: pre-wrap;" id="groceryInstructionsText"></div>
+        </div>
+        <div style="font-weight:600; margin-bottom:4px;">Grocery list</div>
+        <div class="grocery-list" id="groceryList"></div>
+        <div class="wizard-footer" style="margin-top:12px;">
+          <button class="btn secondary" id="printBtn">🖨️ Print</button>
+          <span style="font-size:0.78rem; opacity:0.7;">You can also press Ctrl+P to print.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2-Week Plan Grocery Overlay -->
+  <div class="overlay" id="planGroceryOverlay">
+    <div class="overlay-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="title">2‑Week Grocery List</div>
+          <button class="icon-btn" id="closePlanGroceryBtn">✕ Close</button>
+        </div>
+        <div id="planGroceryList"></div>
+        <button class="btn secondary" id="printPlanGroceriesBtn" style="margin-top:12px;">🖨️ Print</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Overlay -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="overlay-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="title">Settings</div>
+          <button class="icon-btn" id="closeSettingsBtn">✕ Close</button>
+        </div>
+        <div class="field">
+          <label>Theme</label>
+          <select id="themeSelect">
+            <option value="pink">Pink (Default)</option>
+            <option value="white">White</option>
+            <option value="black">Black</option>
+            <option value="teal">Teal</option>
+          </select>
+        </div>
+        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn primary" id="exportBtn">💾 Export Recipes</button>
+          <button class="btn secondary" id="importBtn">📥 Import Recipes</button>
+          <input type="file" id="importFile" accept="application/json" style="display:none;" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trash Overlay -->
+  <div class="overlay" id="trashOverlay">
+    <div class="overlay-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="title">Recently deleted (30 days)</div>
+          <button class="icon-btn" id="closeTrashBtn">✕ Close</button>
+        </div>
+        <div class="meal-list" id="trashList"></div>
+        <div style="font-size:0.8rem; opacity:0.6; margin-top:6px;" id="trashEmptyHint">
+          Nothing in trash. Deleted meals stay here for 30 days.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirm -->
+  <div class="overlay" id="confirmOverlay">
+    <div class="overlay-content">
+      <div class="card">
+        <div class="title" style="margin-bottom:8px;">Delete this meal?</div>
+        <div style="font-size:0.9rem; opacity:0.8; margin-bottom:12px;">
+          Are you sure you want to delete this meal? You can restore it from the trash for 30 days.
+        </div>
+        <div class="wizard-footer">
+          <button class="btn secondary" id="cancelDeleteBtn">Cancel</button>
+          <button class="btn danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <span id="toastText"></span>
+  </div>
+
+  <script>
+    // CRITICAL: DO NOT change the existing key
+    const STORAGE_KEY = 'cozyMeals_v2';
+    const BACKUP_KEY = 'cozyMeals_v2_backup';
+    const THEME_KEY = 'cozyMeals_theme';
+
+    let meals = [];
+    let currentFilter = 'All';
+    let wizardStep = 0;
+    let editingMealId = null;
+    let pendingDeleteId = null;
+    let toastTimeout = null;
+    let wizardIngredients = [];
+    let currentPhotoData = null;
+    let searchTimeout = null;
+
+    // Elements
+    const mealListEl = document.getElementById('mealList');
+    const emptyHintEl = document.getElementById('emptyHint');
+    const categoryChipsEl = document.getElementById('categoryChips');
+    const searchInput = document.getElementById('searchInput');
+
+    const wizardOverlay = document.getElementById('wizardOverlay');
+    const groceryOverlay = document.getElementById('groceryOverlay');
+    const trashOverlay = document.getElementById('trashOverlay');
+    const confirmOverlay = document.getElementById('confirmOverlay');
+    const planGroceryOverlay = document.getElementById('planGroceryOverlay');
+    const settingsOverlay = document.getElementById('settingsOverlay');
+
+    const wizardTitleEl = document.getElementById('wizardTitle');
+    const mealNameInput = document.getElementById('mealNameInput');
+    const mealDescInput = document.getElementById('mealDescInput');
+    const mealInstructionsInput = document.getElementById('mealInstructionsInput');
+    const mealPrepTimeInput = document.getElementById('mealPrepTimeInput');
+    const mealServingsInput = document.getElementById('mealServingsInput');
+    const mealCategoryInput = document.getElementById('mealCategoryInput');
+    
+    const mealPhotoInput = document.getElementById('mealPhotoInput');
+    const mealPhotoPreview = document.getElementById('mealPhotoPreview');
+    const removePhotoBtn = document.getElementById('removePhotoBtn');
+
+    const ingredientInput = document.getElementById('ingredientInput');
+    const ingredientPills = document.getElementById('ingredientPills');
+    const oftenUsedInput = document.getElementById('oftenUsedInput');
+    const hardToMakeInput = document.getElementById('hardToMakeInput');
+
+    const wizardStepEls = [
+      document.getElementById('wizardStep0'),
+      document.getElementById('wizardStep1'),
+      document.getElementById('wizardStep2'),
+    ];
+    const tabEls = document.querySelectorAll('.tabs:not(#mainTabs) .tab');
+    const wizardBackBtn = document.getElementById('wizardBackBtn');
+    const wizardNextBtn = document.getElementById('wizardNextBtn');
+    const openWizardBtn = document.getElementById('openWizardBtn');
+    const closeWizardBtn = document.getElementById('closeWizardBtn');
+
+    const groceryTitleEl = document.getElementById('groceryTitle');
+    const groceryMetaEl = document.getElementById('groceryMeta');
+    const groceryDescEl = document.getElementById('groceryDesc');
+    const groceryListEl = document.getElementById('groceryList');
+    const closeGroceryBtn = document.getElementById('closeGroceryBtn');
+    const printBtn = document.getElementById('printBtn');
+    const groceryPhoto = document.getElementById('groceryPhoto');
+    const groceryInstructions = document.getElementById('groceryInstructions');
+    const groceryInstructionsText = document.getElementById('groceryInstructionsText');
+
+    const trashBtn = document.getElementById('trashBtn');
+    const trashListEl = document.getElementById('trashList');
+    const trashEmptyHintEl = document.getElementById('trashEmptyHint');
+    const closeTrashBtn = document.getElementById('closeTrashBtn');
+
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+
+    const toastEl = document.getElementById('toast');
+    const toastTextEl = document.getElementById('toastText');
+
+    const mainTabs = document.querySelectorAll('#mainTabs .tab');
+    const mealsTab = document.getElementById('mealsTab');
+    const planTab = document.getElementById('planTab');
+    const planListEl = document.getElementById('planList');
+    const resetPlanBtn = document.getElementById('resetPlanBtn');
+    const generatePlanGroceriesBtn = document.getElementById('generatePlanGroceriesBtn');
+    const planGroceryListEl = document.getElementById('planGroceryList');
+    const closePlanGroceryBtn = document.getElementById('closePlanGroceryBtn');
+    const printPlanGroceriesBtn = document.getElementById('printPlanGroceriesBtn');
+
+    const settingsBtn = document.getElementById('settingsBtn');
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const themeSelect = document.getElementById('themeSelect');
+    const exportBtn = document.getElementById('exportBtn');
+    const importBtn = document.getElementById('importBtn');
+    const importFile = document.getElementById('importFile');
+
+    // --- Core Functions ---
+    function loadMeals() {
+      let loaded = false;
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          meals = JSON.parse(raw);
+          if (Array.isArray(meals)) loaded = true;
+        }
+      } catch (e) { /* ignore */ }
+      
+      if (!loaded) {
+        try {
+          const backupRaw = localStorage.getItem(BACKUP_KEY);
+          if (backupRaw) {
+            meals = JSON.parse(backupRaw);
+            if (Array.isArray(meals)) {
+              loaded = true;
+              showToast('Recovered meals from backup.');
+            }
+          }
+        } catch (err) { /* ignore */ }
+      }
+      
+      if (!loaded) meals = [];
+      purgeOldDeleted();
+    }
+
+    function saveMeals() {
+      try {
+        const data = JSON.stringify(meals);
+        localStorage.setItem(STORAGE_KEY, data);
+        localStorage.setItem(BACKUP_KEY, data); // Automatic backup
+      } catch (e) {
+        showToast('Storage limit reached. Could not save.');
+      }
+    }
+
+    function purgeOldDeleted() {
+      const now = Date.now();
+      const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+      meals = meals.filter(m => !m.deletedAt || (now - m.deletedAt) <= THIRTY_DAYS);
+      saveMeals();
+    }
+
+    function showToast(msg) {
+      toastTextEl.textContent = msg;
+      toastEl.classList.add('visible');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toastEl.classList.remove('visible');
+      }, 2200);
+    }
+
+    // --- Overlay Management ---
+    function openOverlay(el) {
+      el.classList.add('visible');
+      document.body.classList.add('dialog-open');
+    }
+
+    function closeOverlay(el) {
+      el.classList.remove('visible');
+      setTimeout(() => {
+        if (!document.querySelector('.overlay.visible')) {
+          document.body.classList.remove('dialog-open');
+        }
+      }, 300);
+    }
+
+    // --- Theme ---
+    function loadTheme() {
+      const theme = localStorage.getItem(THEME_KEY) || 'pink';
+      document.body.setAttribute('data-theme', theme);
+      themeSelect.value = theme;
+    }
+
+    themeSelect.addEventListener('change', () => {
+      const theme = themeSelect.value;
+      localStorage.setItem(THEME_KEY, theme);
+      document.body.setAttribute('data-theme', theme);
+      showToast('Theme updated ✨');
+    });
+
+    // --- Render UI ---
+    function renderCategoryChips() {
+      const cats = ['All', 'Beef', 'Chicken', 'Pork', 'Pasta', 'Dessert', 'Misc'];
+      categoryChipsEl.innerHTML = '';
+      cats.forEach(cat => {
+        const chip = document.createElement('div');
+        chip.className = 'chip' + (cat === currentFilter ? ' active' : '');
+        chip.textContent = cat;
+        chip.onclick = () => {
+          currentFilter = cat;
+          renderCategoryChips();
+          renderMeals();
+        };
+        categoryChipsEl.appendChild(chip);
+      });
+    }
+
+    function renderMeals() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const visibleMeals = meals
+        .filter(m => !m.deletedAt)
+        .filter(m => currentFilter === 'All' || m.category === currentFilter)
+        .filter(m => !searchTerm || m.name.toLowerCase().includes(searchTerm) || m.category.toLowerCase().includes(searchTerm))
+        .sort((a, b) => {
+          if (a.oftenUsed && !b.oftenUsed) return -1;
+          if (!a.oftenUsed && b.oftenUsed) return 1;
+          return a.name.localeCompare(b.name);
+        });
+
+      mealListEl.innerHTML = '';
+      if (visibleMeals.length === 0) {
+        emptyHintEl.style.display = 'block';
+        emptyHintEl.textContent = 'No meals found.';
+      } else {
+        emptyHintEl.style.display = 'block';
+        emptyHintEl.textContent = 'Tap a meal to see its recipe and grocery list.';
+      }
+
+      visibleMeals.forEach(meal => {
+        const item = document.createElement('div');
+        item.className = 'meal-item';
+
+        const main = document.createElement('div');
+        main.className = 'meal-main';
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'meal-name';
+        nameEl.textContent = meal.name;
+
+        const metaEl = document.createElement('div');
+        metaEl.className = 'meal-meta';
+        const metaParts = [meal.category];
+        if (meal.prepTime) metaParts.push(`⏱️ ${meal.prepTime}`);
+        metaEl.textContent = metaParts.join(' • ');
+
+        const icons = document.createElement('div');
+        icons.className = 'meal-icons';
+        if (meal.oftenUsed) {
+          const star = document.createElement('span');
+          star.textContent = '⭐';
+          star.title = 'Favorite';
+          icons.appendChild(star);
+        }
+        if (meal.hardToMake) {
+          const fire = document.createElement('span');
+          fire.textContent = '🔥';
+          fire.title = 'Hard to make';
+          icons.appendChild(fire);
+        }
+
+        metaEl.appendChild(icons);
+        main.appendChild(nameEl);
+        main.appendChild(metaEl);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerHTML = '×';
+        deleteBtn.onclick = (e) => {
+          e.stopPropagation();
+          pendingDeleteId = meal.id;
+          openOverlay(confirmOverlay);
+        };
+
+        const planCheckbox = document.createElement('input');
+        planCheckbox.type = 'checkbox';
+        planCheckbox.checked = !!meal.inPlan;
+        planCheckbox.style.transform = 'scale(1.2)';
+        planCheckbox.style.marginLeft = '10px';
+        planCheckbox.title = 'Add to Plan';
+        planCheckbox.onclick = (e) => {
+          e.stopPropagation();
+          meal.inPlan = planCheckbox.checked;
+          saveMeals();
+          renderPlanTab();
+        };
+
+        item.appendChild(main);
+        item.appendChild(deleteBtn);
+        item.appendChild(planCheckbox);
+        item.onclick = () => openGrocery(meal.id);
+
+        mealListEl.appendChild(item);
+      });
+    }
+
+    // --- Wizard ---
+    function openWizard(editId = null) {
+      editingMealId = editId;
+      wizardStep = 0;
+      wizardIngredients = [];
+      ingredientPills.innerHTML = '';
+      oftenUsedInput.checked = false;
+      hardToMakeInput.checked = false;
+      currentPhotoData = null;
+      mealPhotoInput.value = '';
+      mealPhotoPreview.style.display = 'none';
+      removePhotoBtn.style.display = 'none';
+
+      if (editId) {
+        const meal = meals.find(m => m.id === editId);
+        if (!meal) return;
+        wizardTitleEl.textContent = 'Edit Meal';
+        mealNameInput.value = meal.name;
+        mealDescInput.value = meal.description || '';
+        mealInstructionsInput.value = meal.instructions || '';
+        mealPrepTimeInput.value = meal.prepTime || '';
+        mealServingsInput.value = meal.servings || '';
+        mealCategoryInput.value = meal.category || 'Misc';
+        wizardIngredients = meal.ingredients ? [...meal.ingredients] : [];
+        renderIngredientPills();
+        oftenUsedInput.checked = !!meal.oftenUsed;
+        hardToMakeInput.checked = !!meal.hardToMake;
+        
+        if (meal.photo) {
+          currentPhotoData = meal.photo;
+          mealPhotoPreview.src = meal.photo;
+          mealPhotoPreview.style.display = 'block';
+          removePhotoBtn.style.display = 'inline-flex';
+        }
+      } else {
+        wizardTitleEl.textContent = 'New Meal';
+        mealNameInput.value = '';
+        mealDescInput.value = '';
+        mealInstructionsInput.value = '';
+        mealPrepTimeInput.value = '';
+        mealServingsInput.value = '';
+        
+        // Pre-select the current category if one is actively filtered
+        if (currentFilter !== 'All') {
+          mealCategoryInput.value = currentFilter;
+        } else {
+          mealCategoryInput.value = 'Beef'; // Keep the original default for 'All'
+        }
+      }
+
+      updateWizardStep();
+      openOverlay(wizardOverlay);
+      setTimeout(() => mealNameInput.focus(), 100);
+    }
+
+    function closeWizard() {
+      closeOverlay(wizardOverlay);
+    }
+
+    function updateWizardStep() {
+      wizardStepEls.forEach((el, idx) => {
+        el.style.display = idx === wizardStep ? 'block' : 'none';
+      });
+      tabEls.forEach(tab => {
+        const step = Number(tab.dataset.step);
+        tab.classList.toggle('active', step === wizardStep);
+      });
+
+      wizardBackBtn.style.visibility = wizardStep === 0 ? 'hidden' : 'visible';
+      wizardNextBtn.textContent = wizardStep === 2 ? 'Save meal' : 'Next →';
+    }
+
+    function addIngredientFromInput() {
+      const raw = ingredientInput.value.trim();
+      if (!raw) return;
+      wizardIngredients.push(raw);
+      ingredientInput.value = '';
+      renderIngredientPills();
+    }
+
+    function renderIngredientPills() {
+      ingredientPills.innerHTML = '';
+      wizardIngredients.forEach((ing, idx) => {
+        const pill = document.createElement('div');
+        pill.className = 'pill';
+        pill.textContent = ing;
+        const remove = document.createElement('span');
+        remove.textContent = '×';
+        remove.title = 'Remove';
+        remove.onclick = () => {
+          wizardIngredients.splice(idx, 1);
+          renderIngredientPills();
+        };
+        pill.appendChild(remove);
+        ingredientPills.appendChild(pill);
+      });
+    }
+
+    function saveMealFromWizard() {
+      const name = mealNameInput.value.trim();
+      if (!name) {
+        showToast('Please add a meal name.');
+        wizardStep = 0;
+        updateWizardStep();
+        return;
+      }
+
+      const desc = mealDescInput.value.trim();
+      const instructions = mealInstructionsInput.value.trim();
+      const prepTime = mealPrepTimeInput.value.trim();
+      const servings = mealServingsInput.value.trim();
+      const category = mealCategoryInput.value || 'Misc';
+      const oftenUsed = !!oftenUsedInput.checked;
+      const hardToMake = !!hardToMakeInput.checked;
+
+      if (editingMealId) {
+        const idx = meals.findIndex(m => m.id === editingMealId);
+        if (idx !== -1) {
+          meals[idx] = {
+            ...meals[idx],
+            name,
+            description: desc,
+            instructions: instructions,
+            prepTime: prepTime,
+            servings: servings,
+            category,
+            ingredients: [...wizardIngredients],
+            oftenUsed,
+            hardToMake,
+            photo: currentPhotoData
+          };
+        }
+      } else {
+        const id = 'meal_' + Date.now() + '_' + Math.random().toString(16).slice(2);
+        meals.push({
+          id,
+          name,
+          description: desc,
+          instructions: instructions,
+          prepTime: prepTime,
+          servings: servings,
+          category,
+          ingredients: [...wizardIngredients],
+          oftenUsed,
+          hardToMake,
+          deletedAt: null,
+          inPlan: false,
+          photo: currentPhotoData
+        });
+      }
+
+      saveMeals();
+      renderMeals();
+      renderPlanTab();
+      closeWizard();
+      showToast('Meal saved to list ✨');
+    }
+
+    // --- Recipe Detail ---
+    function openGrocery(id) {
+      const meal = meals.find(m => m.id === id);
+      if (!meal) return;
+      groceryTitleEl.textContent = meal.name;
+      
+      const icons = [];
+      if (meal.oftenUsed) icons.push('⭐ Favorite');
+      if (meal.hardToMake) icons.push('🔥 Hard to make');
+      
+      const metaParts = [meal.category];
+      if (meal.prepTime) metaParts.push(`⏱️ ${meal.prepTime}`);
+      if (meal.servings) metaParts.push(`🍽️ ${meal.servings}`);
+      if (icons.length) metaParts.push(icons.join(' • '));
+      
+      groceryMetaEl.textContent = metaParts.join(' • ');
+      groceryDescEl.textContent = meal.description || '';
+      
+      if (meal.instructions && meal.instructions.trim()) {
+        groceryInstructionsText.textContent = meal.instructions;
+        groceryInstructions.style.display = 'block';
+      } else {
+        groceryInstructions.style.display = 'none';
+      }
+      
+      if (meal.photo) {
+        groceryPhoto.src = meal.photo;
+        groceryPhoto.style.display = 'block';
+      } else {
+        groceryPhoto.style.display = 'none';
+      }
+      
+      groceryListEl.innerHTML = '';
+      const ingredients = meal.ingredients && meal.ingredients.length > 0
+        ? meal.ingredients
+        : ['(No ingredients saved for this meal yet.)'];
+
+      ingredients.forEach(ing => {
+        const row = document.createElement('div');
+        row.className = 'grocery-item';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        const label = document.createElement('span');
+        label.textContent = ing;
+        row.appendChild(cb);
+        row.appendChild(label);
+        groceryListEl.appendChild(row);
+      });
+
+      openOverlay(groceryOverlay);
+    }
+
+    function closeGrocery() {
+      closeOverlay(groceryOverlay);
+    }
+
+    // --- Trash ---
+    function openTrash() {
+      purgeOldDeleted();
+      const deletedMeals = meals.filter(m => m.deletedAt);
+      trashListEl.innerHTML = '';
+      if (deletedMeals.length === 0) {
+        trashEmptyHintEl.style.display = 'block';
+      } else {
+        trashEmptyHintEl.style.display = 'none';
+      }
+
+      deletedMeals
+        .sort((a, b) => (b.deletedAt || 0) - (a.deletedAt || 0))
+        .forEach(meal => {
+          const item = document.createElement('div');
+          item.className = 'meal-item';
+
+          const main = document.createElement('div');
+          main.className = 'meal-main';
+
+          const nameEl = document.createElement('div');
+          nameEl.className = 'meal-name';
+          nameEl.textContent = meal.name;
+
+          const metaEl = document.createElement('div');
+          metaEl.className = 'meal-meta';
+          const date = new Date(meal.deletedAt);
+          metaEl.textContent = `Deleted ${date.toLocaleDateString()}`;
+
+          main.appendChild(nameEl);
+          main.appendChild(metaEl);
+
+          const actions = document.createElement('div');
+          actions.style.display = 'flex';
+          actions.style.gap = '6px';
+
+          const restoreBtn = document.createElement('button');
+          restoreBtn.className = 'icon-btn';
+          restoreBtn.textContent = 'Restore';
+          restoreBtn.onclick = () => {
+            meal.deletedAt = null;
+            saveMeals();
+            renderMeals();
+            renderPlanTab();
+            openTrash();
+            showToast('Meal restored.');
+          };
+
+          const deleteForeverBtn = document.createElement('button');
+          deleteForeverBtn.className = 'icon-btn danger';
+          deleteForeverBtn.textContent = 'Delete forever';
+          deleteForeverBtn.onclick = () => {
+            meals = meals.filter(m => m.id !== meal.id);
+            saveMeals();
+            renderMeals();
+            renderPlanTab();
+            openTrash();
+            showToast('Meal deleted permanently.');
+          };
+
+          actions.appendChild(restoreBtn);
+          actions.appendChild(deleteForeverBtn);
+          item.appendChild(main);
+          item.appendChild(actions);
+          trashListEl.appendChild(item);
+        });
+
+      openOverlay(trashOverlay);
+    }
+
+    function closeTrash() {
+      closeOverlay(trashOverlay);
+    }
+
+    // --- Delete Confirmation ---
+    function confirmDelete() {
+      if (!pendingDeleteId) return;
+      const meal = meals.find(m => m.id === pendingDeleteId);
+      if (meal) {
+        meal.deletedAt = Date.now();
+        meal.inPlan = false;
+        saveMeals();
+        renderMeals();
+        renderPlanTab();
+        showToast('Meal moved to trash.');
+      }
+      pendingDeleteId = null;
+      closeOverlay(confirmOverlay);
+    }
+
+    function cancelDelete() {
+      pendingDeleteId = null;
+      closeOverlay(confirmOverlay);
+    }
+
+    // --- 2-Week Plan ---
+    function renderPlanTab() {
+      const selected = meals.filter(m => m.inPlan && !m.deletedAt);
+      planListEl.innerHTML = '';
+
+      selected.forEach(meal => {
+        const item = document.createElement('div');
+        item.className = 'meal-item';
+
+        const main = document.createElement('div');
+        main.className = 'meal-main';
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'meal-name';
+        nameEl.textContent = meal.name;
+
+        const metaEl = document.createElement('div');
+        metaEl.className = 'meal-meta';
+        metaEl.textContent = meal.category;
+
+        const icons = document.createElement('div');
+        icons.className = 'meal-icons';
+        if (meal.oftenUsed) {
+          const star = document.createElement('span');
+          star.textContent = '⭐';
+          icons.appendChild(star);
+        }
+        if (meal.hardToMake) {
+          const fire = document.createElement('span');
+          fire.textContent = '🔥';
+          icons.appendChild(fire);
+        }
+
+        metaEl.appendChild(icons);
+        main.appendChild(nameEl);
+        main.appendChild(metaEl);
+
+        item.appendChild(main);
+        planListEl.appendChild(item);
+      });
+
+      if (selected.length === 0) {
+        const hint = document.createElement('div');
+        hint.style.fontSize = '0.8rem';
+        hint.style.opacity = '0.6';
+        hint.style.marginTop = '6px';
+        hint.textContent = 'No meals in the 2‑week plan yet. Check “Add to Plan” on meals to include them.';
+        planListEl.appendChild(hint);
+      }
+    }
+
+    // --- Photo Handling ---
+    mealPhotoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            // Resize image to prevent localStorage overflow
+            const canvas = document.createElement('canvas');
+            const maxW = 600;
+            let w = img.width, h = img.height;
+            if (w > maxW) {
+              h = Math.round(h * (maxW / w));
+              w = maxW;
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            currentPhotoData = canvas.toDataURL('image/jpeg', 0.7);
+            mealPhotoPreview.src = currentPhotoData;
+            mealPhotoPreview.style.display = 'block';
+            removePhotoBtn.style.display = 'inline-flex';
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    removePhotoBtn.onclick = () => {
+      currentPhotoData = null;
+      mealPhotoInput.value = '';
+      mealPhotoPreview.src = '';
+      mealPhotoPreview.style.display = 'none';
+      removePhotoBtn.style.display = 'none';
+    };
+
+    // --- Export / Import ---
+    exportBtn.onclick = () => {
+      const dataStr = JSON.stringify(meals, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "cozy_meals_backup.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Exported recipes.');
+    };
+
+    importBtn.onclick = () => importFile.click();
+
+    importFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const importedMeals = JSON.parse(event.target.result);
+          if (Array.isArray(importedMeals)) {
+            meals = importedMeals;
+            saveMeals();
+            renderMeals();
+            renderPlanTab();
+            showToast('Recipes imported successfully.');
+            closeOverlay(settingsOverlay);
+          } else {
+            showToast('Invalid file format.');
+          }
+        } catch (err) {
+          showToast('Error reading file.');
+        }
+        e.target.value = '';
+      };
+      reader.readAsText(file);
+    });
+
+    // --- Event Listeners ---
+    openWizardBtn.onclick = () => openWizard();
+    closeWizardBtn.onclick = closeWizard;
+    wizardBackBtn.onclick = () => {
+      if (wizardStep > 0) {
+        wizardStep--;
+        updateWizardStep();
+      }
+    };
+    wizardNextBtn.onclick = () => {
+      if (wizardStep < 2) {
+        wizardStep++;
+        updateWizardStep();
+      } else {
+        saveMealFromWizard();
+      }
+    };
+
+    tabEls.forEach(tab => {
+      tab.onclick = () => {
+        const step = Number(tab.dataset.step);
+        wizardStep = step;
+        updateWizardStep();
+      };
+    });
+
+    ingredientInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addIngredientFromInput();
+      }
+    });
+    ingredientInput.addEventListener('input', (e) => {
+      if (e.target.value.includes(',')) {
+        const parts = e.target.value.split(',');
+        const first = parts[0].trim();
+        if (first) wizardIngredients.push(first);
+        e.target.value = parts.slice(1).join(',').trim();
+        renderIngredientPills();
+      }
+    });
+
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(renderMeals, 200);
+    });
+
+    closeGroceryBtn.onclick = closeGrocery;
+    printBtn.onclick = () => window.print();
+
+    trashBtn.onclick = openTrash;
+    closeTrashBtn.onclick = closeTrash;
+
+    confirmDeleteBtn.onclick = confirmDelete;
+    cancelDeleteBtn.onclick = cancelDelete;
+
+    settingsBtn.onclick = () => openOverlay(settingsOverlay);
+    closeSettingsBtn.onclick = () => closeOverlay(settingsOverlay);
+
+    [wizardOverlay, groceryOverlay, trashOverlay, confirmOverlay, planGroceryOverlay, settingsOverlay].forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeOverlay(overlay);
+      });
+    });
+
+    mainTabs.forEach(tab => {
+      tab.onclick = () => {
+        mainTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        if (tab.dataset.main === 'meals') {
+          mealsTab.style.display = 'block';
+          planTab.style.display = 'none';
+        } else {
+          mealsTab.style.display = 'none';
+          planTab.style.display = 'block';
+          renderPlanTab();
+        }
+      };
+    });
+
+    resetPlanBtn.onclick = () => {
+      meals.forEach(m => m.inPlan = false);
+      saveMeals();
+      renderMeals();
+      renderPlanTab();
+      showToast('Meal plan reset.');
+    };
+
+    generatePlanGroceriesBtn.onclick = () => {
+      const selected = meals.filter(m => m.inPlan && !m.deletedAt);
+      planGroceryListEl.innerHTML = '';
+
+      if (selected.length === 0) {
+        const msg = document.createElement('div');
+        msg.style.fontSize = '0.9rem';
+        msg.style.opacity = '0.7';
+        msg.textContent = 'No meals in the plan yet.';
+        planGroceryListEl.appendChild(msg);
+      } else {
+        selected.forEach(meal => {
+          const title = document.createElement('div');
+          title.style.fontWeight = '600';
+          title.style.marginTop = '10px';
+          title.textContent = meal.name;
+          planGroceryListEl.appendChild(title);
+
+          const ingredients = meal.ingredients && meal.ingredients.length > 0
+            ? meal.ingredients
+            : ['(No ingredients saved for this meal yet.)'];
+
+          ingredients.forEach(ing => {
+            const row = document.createElement('div');
+            row.className = 'grocery-item';
+            row.textContent = ing;
+            planGroceryListEl.appendChild(row);
+          });
+        });
+      }
+      openOverlay(planGroceryOverlay);
+    };
+
+    closePlanGroceryBtn.onclick = () => closeOverlay(planGroceryOverlay);
+    printPlanGroceriesBtn.onclick = () => window.print();
+
+    // --- Initialize ---
+    loadTheme();
+    loadMeals();
+    renderCategoryChips();
+    renderMeals();
+    renderPlanTab();
+  </script>
+</body>
+</html>
